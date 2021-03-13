@@ -14,7 +14,7 @@ local states = {
     {name = "BROKEN", color = Colors.errorColor}
 }
 
-local types = {
+widget.types = {
     POWER = "POWER",
     MULTIBLOCK = "MULTIBLOCK",
     MACHINE = "MACHINE"
@@ -70,8 +70,8 @@ function widget.drawBaseWidget(x, y, width, height, title)
     DoubleBuffer.drawText(x + math.floor((width - Unicode.len(title) + 1) / 2), y + 3, Colors.labelColor, title)
 end
 
-local function draw(self, index)
-    if self.type == types.POWER then
+function widget.draw(self, index)
+    if self.type == widget.types.POWER then
         index = 10
     end
     local scale = self.scale or 1
@@ -199,40 +199,12 @@ function fake.machineWidget.create()
         state = state,
         progress = 0,
         maxProgress = state ~= states[3] and state ~= states[4] and math.random(500) or 0,
-        type = types.MACHINE,
+        type = widget.types.MACHINE,
         update = fake.machineWidget.update,
         onClick = fake.machineWidget.onClick,
         getMiddleString = fake.machineWidget.getMiddleString,
-        draw = draw
+        draw = widget.draw
     }
-end
-
-function widget.createMachineWidget(address, name)
-    local getMultiblockStatus = require("domain.multiblock.get-multiblock-status-usecase")
-    local function update(self)
-        for key, value in pairs(getMultiblockStatus(address, self.name)) do
-            self[key] = value
-        end
-    end
-
-    local toggleMultiblockWork = require("domain.multiblock.toggle-multiblock-work")
-    local function onClick(self)
-        toggleMultiblockWork(address, self.name)
-    end
-
-    local machineWidget = {
-        name = name,
-        type = types.MULTIBLOCK,
-        update = update,
-        onClick = onClick,
-        getMiddleString = function()
-        end,
-        draw = draw
-    }
-
-    machineWidget:update()
-
-    return machineWidget
 end
 
 fake.powerWidget = {}
@@ -260,11 +232,11 @@ function fake.powerWidget.create()
         maxProgress = 16000000,
         dProgress = 1,
         scale = 2,
-        type = types.POWER,
+        type = widget.types.POWER,
         update = fake.powerWidget.update,
         onClick = fake.powerWidget.onClick,
         getMiddleString = fake.powerWidget.getMiddleString,
-        draw = draw
+        draw = widget.draw
     }
 end
 
@@ -298,12 +270,12 @@ function widget.createPowerWidget(address)
     local powerWidget = {
         name = "Power",
         scale = 2,
-        type = types.POWER,
+        type = widget.types.POWER,
         update = update,
         onClick = function()
         end,
         getMiddleString = getMiddleString,
-        draw = draw
+        draw = widget.draw
     }
     powerWidget:update()
 

@@ -1,6 +1,9 @@
 -- Import section
+Widget = require("api.gui.widget")
 
+local getMultiblockStatus = require("domain.multiblock.get-multiblock-status-usecase")
 local multiBlockAddresses = require("config.addresses.multi-blocks")
+local toggleMultiblockWork = require("domain.multiblock.toggle-multiblock-work")
 
 --
 
@@ -19,8 +22,34 @@ local overview = {
     }
 }
 
+local function createMachineWidget(address, name)
+    local function update(self)
+        for key, value in pairs(getMultiblockStatus(address, self.name)) do
+            self[key] = value
+        end
+    end
+
+    local function onClick(self)
+        toggleMultiblockWork(address, self.name)
+    end
+
+    local machineWidget = {
+        name = name,
+        type = Widget.types.MULTIBLOCK,
+        update = update,
+        onClick = onClick,
+        getMiddleString = function()
+        end,
+        draw = Widget.draw
+    }
+
+    machineWidget:update()
+
+    return machineWidget
+end
+
 for name, address in pairs(multiBlockAddresses) do
-    table.insert(overview.widgets, Widget.createMachineWidget(address, name))
+    table.insert(overview.widgets, createMachineWidget(address, name))
 end
 
 return overview
