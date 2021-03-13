@@ -24,6 +24,9 @@ for name, address in pairs(multiBlockAddresses) do
 end
 
 function overview.widgets.update()
+    for _, widget in ipairs(overview.widgets) do
+        widget:update()
+    end
     for i = 1, 9 do
         overview.widgets.active[i] = overview.widgets[9 * (overview.pageIndex - 1) + i]
     end
