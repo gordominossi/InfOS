@@ -1,4 +1,5 @@
 -- Import section
+Machine = require("data.datasource.machine")
 Alarm = require("api.sound.alarm")
 --
 
@@ -15,7 +16,14 @@ local function resume(machines)
     end
 end
 
-local function exec(cleanroom, machines)
+local function exec(cleanroomAddresses)
+    local cleanroom = Machine.getMachine(cleanroomAddresses.cleanroom, "Cleanroom", Machine.types.multiblock)
+    local machines = {}
+    for name, address in pairs(cleanroomAddresses) do
+        if name ~= "cleanroom" then
+            table.insert(machines, Machine.getMachine(address, name, Machine.types.singleblock))
+        end
+    end
     if (tonumber(cleanroom:getEfficiencyPercentage()) < 100) then
         if (not cleanroom.isHalted) then
             halt(machines)
