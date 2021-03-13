@@ -5,7 +5,12 @@
 |sto| w | w | w |
 |not| power |b|f|
 --]]
-
 return {
-    title = "Glasses"
+    title = "Glasses",
+    pageIndex = 1,
+    widgets = {},
+    update = function()
+    end,
+    draw = function()
+    end
 }

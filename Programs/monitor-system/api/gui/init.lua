@@ -110,13 +110,11 @@ local function clickNavigationButton(self)
 end
 
 local function setupSideBar(button)
-    elements.mainSection = pages.overview
 
-    drawTitle(button.title)
 
     local panelIndex = 1
     for _, pg in ipairs(pages) do
-        if pg ~= button then
+        if pg.title ~= button.title then
             elements.panelSections[panelIndex] = {
                 title = pg.title,
                 onClick = function()
@@ -125,6 +123,9 @@ local function setupSideBar(button)
             }
             drawSidebarButton(panelIndex, pg.title)
             panelIndex = panelIndex + 1
+        else
+            elements.mainSection = pg
+            drawTitle(pg.title)
         end
     end
     elements[1] = elements.panelSections[1]
