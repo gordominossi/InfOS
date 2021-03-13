@@ -2,7 +2,7 @@
 Widget = require("api.gui.widget")
 
 local multiBlockAddresses = require("config.addresses.multi-blocks")
-local getMultiblockStatus = require("domain.multiblock.get-multiblock-status-usaddressesecase")
+local getMultiblockStatus = require("domain.multiblock.get-multiblock-status-usecase")
 local toggleMultiblockWork = require("domain.multiblock.toggle-multiblock-work")
 
 --
