@@ -185,6 +185,16 @@ function page.update()
         elements.mainSection.widgets.active[i] =
             elements.mainSection.widgets[9 * (elements.mainSection.pageIndex - 1) + i]
     end
+
+    elements[6] = elements.mainSection.widgets.active[1]
+    elements[7] = elements.mainSection.widgets.active[2]
+    elements[8] = elements.mainSection.widgets.active[3]
+    elements[10] = elements.mainSection.widgets.active[4]
+    elements[11] = elements.mainSection.widgets.active[5]
+    elements[12] = elements.mainSection.widgets.active[6]
+    elements[14] = elements.mainSection.widgets.active[7]
+    elements[15] = elements.mainSection.widgets.active[8]
+    elements[16] = elements.mainSection.widgets.active[9]
     Widget.clear()
 
     for index, activeWidget in ipairs(elements.mainSection.widgets.active) do

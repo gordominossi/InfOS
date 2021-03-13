@@ -8,7 +8,9 @@
 return {
     title = "Notifications",
     pageIndex = 1,
-    widgets = {},
+    widgets = {
+        active = {}
+    },
     update = function()
     end,
     draw = function()
