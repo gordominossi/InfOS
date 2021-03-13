@@ -110,8 +110,6 @@ local function clickNavigationButton(self)
 end
 
 local function setupSideBar(button)
-
-
     local panelIndex = 1
     for _, pg in ipairs(pages) do
         if pg.title ~= button.title then
@@ -180,15 +178,18 @@ function page.setup()
 end
 
 function page.update()
-    -- for _, widget in ipairs(elements.mainWidgets) do
-    --     widget:update()
-    -- end
-    -- for index, activeWidget in ipairs(elements.mainWidgets.active) do
-    --     activeWidget:draw(index)
-    -- end
+    for _, widget in ipairs(elements.mainSection.widgets) do
+        widget:update()
+    end
+    for i = 1, 9 do
+        elements.mainSection.widgets.active[i] =
+            elements.mainSection.widgets[9 * (elements.mainSection.pageIndex - 1) + i]
+    end
+    Widget.clear()
 
-    elements.mainSection:update()
-    elements.mainSection:draw()
+    for index, activeWidget in ipairs(elements.mainSection.widgets.active) do
+        activeWidget:draw(index)
+    end
 
     elements.powerWidget:update()
     elements.powerWidget:draw()
