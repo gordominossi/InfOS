@@ -5,7 +5,14 @@
 |sto|ev ti|ev ti|
 |not| power |b|f|
 --]]
-
 return {
-    title = "Help"
+    title = "Help",
+    pageIndex = 1,
+    widgets = {
+        active = {}
+    },
+    update = function()
+    end,
+    draw = function()
+    end
 }

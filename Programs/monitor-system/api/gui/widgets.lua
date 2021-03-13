@@ -5,7 +5,14 @@
 |sto| w | w | w |
 |not| power |b|f|
 --]]
-
 return {
-    title = "Widgets"
+    title = "Widgets",
+    pageIndex = 1,
+    widgets = {
+        active = {}
+    },
+    update = function()
+    end,
+    draw = function()
+    end
 }

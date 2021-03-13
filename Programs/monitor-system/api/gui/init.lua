@@ -6,6 +6,8 @@ DoubleBuffer = require("graphics.doubleBuffering")
 Constants = require("api.gui.constants")
 Colors = require("graphics.colors")
 Widget = require("api.gui.widget")
+
+local energyBufferAddresses = require("config.addresses.energy-buffers")
 --
 
 -- GPU resolution should be 160 x 50.
@@ -44,7 +46,8 @@ pages[5] = pages.notifications
 pages[6] = pages.overview
 
 local elements = {
-    machineWidgets = {},
+    mainSection = {},
+    powerWidget = {},
     panelSections = {},
     navigationButtons = {}
 }
@@ -69,7 +72,7 @@ local function drawTitle(title)
     Widget.drawBaseWidget(x, y, width, height, title)
 end
 
-local function drawPanelSection(index, title)
+local function drawSidebarButton(index, title)
     local width = math.floor(0.6 * Constants.baseWidth)
     local height = math.floor(0.6 * Constants.baseHeight)
     local x = math.floor((Constants.baseWidth - width) / 2)
@@ -95,54 +98,32 @@ local function drawRebootButton()
     Widget.drawBaseWidget(x, y, width, height, "Restart")
 end
 
-local function refreshActiveMachineWidgets()
-    for i = 1, 9 do
-        elements.machineWidgets.active[i] = elements.machineWidgets[9 * (elements.machineWidgets.active.index - 1) + i]
-    end
-
-    elements[6] = elements.machineWidgets.active[1]
-    elements[7] = elements.machineWidgets.active[2]
-    elements[8] = elements.machineWidgets.active[3]
-    elements[10] = elements.machineWidgets.active[4]
-    elements[11] = elements.machineWidgets.active[5]
-    elements[12] = elements.machineWidgets.active[6]
-    elements[14] = elements.machineWidgets.active[7]
-    elements[15] = elements.machineWidgets.active[8]
-    elements[16] = elements.machineWidgets.active[9]
-
-    Widget.clear()
-end
-
 local function clickNavigationButton(self)
     if not self.active then
         return
     end
     if self.title == "◀" then
-        elements.machineWidgets.active.index = elements.machineWidgets.active.index - 1
+        elements.mainSection.pageIndex = elements.mainSection.pageIndex - 1
     else
-        elements.machineWidgets.active.index = elements.machineWidgets.active.index + 1
+        elements.mainSection.pageIndex = elements.mainSection.pageIndex + 1
     end
-    refreshActiveMachineWidgets()
 end
 
-function page.create(element)
-    drawTitle(element.title)
-
-    elements.machineWidgets.active = {}
-    elements.machineWidgets.active.index = 1
-    refreshActiveMachineWidgets()
-
+local function setupSideBar(button)
     local panelIndex = 1
     for _, pg in ipairs(pages) do
-        if pg ~= element then
+        if pg.title ~= button.title then
             elements.panelSections[panelIndex] = {
                 title = pg.title,
                 onClick = function()
-                    page.create(pg)
+                    setupSideBar(pg)
                 end
             }
-            drawPanelSection(panelIndex, pg.title)
+            drawSidebarButton(panelIndex, pg.title)
             panelIndex = panelIndex + 1
+        else
+            elements.mainSection = pg
+            drawTitle(pg.title)
         end
     end
     elements[1] = elements.panelSections[1]
@@ -150,12 +131,22 @@ function page.create(element)
     elements[9] = elements.panelSections[3]
     elements[13] = elements.panelSections[4]
     elements[17] = elements.panelSections[5]
+end
+
+function page.fake()
+    elements.mainSection = Widget.fakeWidgets()
+    elements.powerWidget = Widget.fakePowerWidget()
+    setupSideBar(pages.overview)
+end
+
+function page.setup()
+    elements.powerWidget = Widget.createPowerWidget(energyBufferAddresses.batteryBuffer1)
 
     elements.navigationButtons[1] = {
         title = "◀",
         active = true,
         update = function(self)
-            self.active = elements.machineWidgets[elements.machineWidgets.active.index * 9 - 10] ~= nil
+            self.active = elements.mainSection.widgets[elements.mainSection.pageIndex * 9 - 10] ~= nil
         end,
         onClick = clickNavigationButton,
         draw = drawNavigationButton
@@ -164,7 +155,7 @@ function page.create(element)
         title = "▶",
         active = true,
         update = function(self)
-            self.active = elements.machineWidgets[elements.machineWidgets.active.index * 9 + 1] ~= nil
+            self.active = elements.mainSection.widgets[elements.mainSection.pageIndex * 9 + 1] ~= nil
         end,
         onClick = clickNavigationButton,
         draw = drawNavigationButton
@@ -182,28 +173,32 @@ function page.create(element)
 
     elements[18] = elements.powerWidget
     elements[19] = elements.powerWidget
-end
 
-function page.fake()
-    elements.machineWidgets = Widget.fakeWidgets()
-    elements.powerWidget = Widget.fakePowerWidget()
-    page.create(pages.overview)
-end
-
-function page.setup(energyBufferAddress, multiblockAddresses)
-    for name, address in pairs(multiblockAddresses) do
-        table.insert(elements.machineWidgets, Widget.createMachineWidget(address, name))
-    end
-    elements.powerWidget = Widget.createPowerWidget(energyBufferAddress)
-    page.create(pages.overview)
+    setupSideBar(pages.overview)
 end
 
 function page.update()
-    for _, machineWidget in ipairs(elements.machineWidgets) do
-        machineWidget:update()
+    for _, widget in ipairs(elements.mainSection.widgets) do
+        widget:update()
     end
-    for index, activeMachineWidget in ipairs(elements.machineWidgets.active) do
-        activeMachineWidget:draw(index)
+    for i = 1, 9 do
+        elements.mainSection.widgets.active[i] =
+            elements.mainSection.widgets[9 * (elements.mainSection.pageIndex - 1) + i]
+    end
+
+    elements[6] = elements.mainSection.widgets.active[1]
+    elements[7] = elements.mainSection.widgets.active[2]
+    elements[8] = elements.mainSection.widgets.active[3]
+    elements[10] = elements.mainSection.widgets.active[4]
+    elements[11] = elements.mainSection.widgets.active[5]
+    elements[12] = elements.mainSection.widgets.active[6]
+    elements[14] = elements.mainSection.widgets.active[7]
+    elements[15] = elements.mainSection.widgets.active[8]
+    elements[16] = elements.mainSection.widgets.active[9]
+    Widget.clear()
+
+    for index, activeWidget in ipairs(elements.mainSection.widgets.active) do
+        activeWidget:draw(index)
     end
 
     elements.powerWidget:update()

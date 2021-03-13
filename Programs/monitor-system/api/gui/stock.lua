@@ -5,7 +5,14 @@
 |ove|ev ti|ev ti|
 |not| power |b|f|
 --]]
-
 return {
-    title = "Stock"
+    title = "Stock",
+    pageIndex = 1,
+    widgets = {
+        active = {}
+    },
+    update = function()
+    end,
+    draw = function()
+    end
 }
