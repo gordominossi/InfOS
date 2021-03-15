@@ -14,6 +14,7 @@ For better developing and debbuging, I sugest installing OCEmu.
 - Disable machines that require a cleanroom when it is not at 100% efficiency,
 - Notify about important events in one's base, such as power loss or need for maintenance,
 - Work somewhat nice with shaders
+- Work with OCEmu
 
 ### Screenshot
 ![Shaders on!](2021-01-11_17.14.29.png)
