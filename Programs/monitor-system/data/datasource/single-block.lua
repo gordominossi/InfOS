@@ -1,5 +1,7 @@
 -- Import section
 Component = require("component")
+New = require("utils.new")
+
 local mock = require("data.mock.mock-single-block")
 --
 
@@ -81,8 +83,7 @@ function SingleBlock:getEUMaxStored()
 end
 
 function SingleBlock:new(partialAdress, name)
-    local machine = {}
-    setmetatable(machine, self)
+    local machine = New(self)
 
     if (partialAdress == "") then
         partialAdress = nil
