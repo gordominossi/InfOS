@@ -11,10 +11,8 @@ shell.execute("wget -fq " .. tarBin)
 
 local InfOS = "https://github.com/gordominossi/InfOS/releases/latest/download/InfOS.tar"
 
-shell.setWorkingDirectory("/home")
-if not shell.resolve("/home/InfOS") then
-    shell.execute("mkdir InfOS")
-end
+shell.execute("rm -rf /home/InfOS")
+shell.execute("mkdir /home/InfOS")
 
 shell.setWorkingDirectory("/home/InfOS")
 print("\nUpdating InfOS")
@@ -22,14 +20,11 @@ shell.execute("wget -fq " .. InfOS .. " -f")
 print("...")
 shell.execute("tar -xf InfOS.tar")
 shell.execute("rm -f InfOS.tar")
-
-shell.setWorkingDirectory("/home/")
-shell.execute("rm -rf lib")
-shell.execute("mkdir lib")
-shell.execute("cp -r InfOS/Libraries/* lib")
-shell.execute("rm -f .shrc")
-shell.execute("cp InfOS/.shrc .shrc")
-shell.execute("rm -f setup.lua")
-shell.execute("cp InfOS/setup.lua setup.lua")
+shell.execute("rm -rf /home/lib")
+shell.execute("cp -r lib /home/lib")
+shell.execute("rm -f /home/.shrc")
+shell.execute("cp .shrc /home/.shrc")
+shell.execute("rm -f /home/setup.lua")
+shell.execute("cp setup.lua /home/setup.lua")
 
 print("Success!\n")
