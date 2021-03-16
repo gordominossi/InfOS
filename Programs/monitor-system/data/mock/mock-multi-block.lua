@@ -26,7 +26,7 @@ function MockMultiBlock.getSensorInformation()
         "Stored Energy: §a1000§r EU / §e1000§r EU",
         "Probably uses: §c4§r EU/t",
         "Max Energy Income: §e128§r EU/t(x2A) Tier: §eMV§r",
-        "Problems: §c" .. (MockMultiBlock.isBroken and 1 or 0) .. "§r Efficiency: §e100.0§r %",
+        "Problems: §c" .. (MockMultiBlock.isBroken and 1 or 0) .. "§r Efficiency: §e" .. (MockMultiBlock.isBroken and 100 or 0) .. ".0§r %",
         "Pollution reduced to: §a0§r %",
         n = 6
     }
