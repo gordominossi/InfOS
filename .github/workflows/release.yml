@@ -28,7 +28,7 @@ jobs:
       - uses: meeDamian/github-release@2.0
         with:
           token: ${{ secrets.TOKEN }}
-          tag: v0
+          tag: v1
           gzip: folders
           files: InfOS.tar
           allow_override: true
