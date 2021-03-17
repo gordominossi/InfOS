@@ -33,7 +33,7 @@ local colors = {
 ---[[
 local newColors = {
     background = colors.black,
-    machineBackground = colors.notBlack,
+    machineBackground = colors.black,
     progressBackground = colors.indigo,
     barColor = colors.deepSkyBlue,
     labelColor = colors.goldenRod,
