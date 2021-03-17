@@ -29,7 +29,7 @@ jobs:
         run: tar -cvf InfOS.tar Programs lib .shrc setup.lua
       - uses: meeDamian/github-release@2.0
         with:
-          token: c1dfc9249fdd36afd53f4f558e99cfe7718cd877
+          token: ${{ secrets.TOKEN }}
           tag: v-1
           gzip: folders
           files: InfOS.tar
