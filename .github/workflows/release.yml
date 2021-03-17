@@ -23,18 +23,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Makes tar and publishes release
-        run: |
-            tar -cvf InfOS.tar Programs lib .shrc setup.lua
-                   
-            curl \
-            -X PATCH \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/gordominossi/InfOS/releases/v-1/assets/$(curl \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/gordominossi/InfOS/releases/v-1/assets | jq '.[] | select(.name=="InfOS.tar")' '.node_id') \
-            -d '{"name":"InfOS.tar" \
-            "content": $(openssl base64 -A -in $InfOS.tar)}'
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: tubone24/setup-nim-action@v1.0.1
+      - name: Install Dependencies
+        run: nimble install -d --accep
+      - name: Build
+        run: tar -cvf InfOS.tar Programs lib .shrc setup.lua
+      - name: update release
+        id: update_release
+        uses: tubone24/update_release@v1.0
+        env:
+          GITHUB_TOKEN: "c1dfc9249fdd36afd53f4f558e99cfe7718cd877"
+        with:
+          body: InfOS.tar
