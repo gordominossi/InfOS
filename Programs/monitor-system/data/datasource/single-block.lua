@@ -1,6 +1,7 @@
 -- Import section
 Component = require("component")
 New = require("utils.new")
+Term = require("term")
 
 local mock = require("data.mock.mock-single-block")
 --
@@ -82,6 +83,8 @@ function SingleBlock:getEUMaxStored()
     return self.block.getEUMaxStored()
 end
 
+local nMachinesNotFound = 0
+
 function SingleBlock:new(partialAdress, name)
     local machine = New(self)
 
@@ -96,7 +99,9 @@ function SingleBlock:new(partialAdress, name)
         end
     )
     if (not successfull) then
-        print("Couldn't find the machine " .. partialAdress)
+        nMachinesNotFound = nMachinesNotFound + 1
+        Term.setCursor(1, 1)
+        print("Failed to find the machine " .. partialAdress .. ". Failed " .. nMachinesNotFound .. " times.")
         machine.block = self.mock:new()
     end
 
