@@ -39,4 +39,12 @@ function MockEnergyProvider.getTotalEnergy()
     return 10000
 end
 
+function MockEnergyProvider.getAverageInput()
+    return MockEnergyProvider.getAverageElectricInput()
+end
+
+function MockEnergyProvider.getAverageOutput()
+    return MockEnergyProvider.getAverageElectricOutput()
+end
+
 return MockEnergyProvider

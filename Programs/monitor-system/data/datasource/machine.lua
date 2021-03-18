@@ -27,9 +27,9 @@ machine.states = {
 }
 
 function machine.getMachine(address, name, type)
-    if machines[address] then
-        return machines[address]
-    else
+    -- if machines[address] then
+    --     return machines[address]
+    -- else
         local mach = {}
         if type == machine.types.energy then
             mach = EnergyProvider:new(address, name)
@@ -40,7 +40,7 @@ function machine.getMachine(address, name, type)
         end
         machines[address] = mach
         return mach
-    end
+    -- end
 end
 
 return machine
