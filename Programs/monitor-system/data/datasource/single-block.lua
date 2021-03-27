@@ -12,11 +12,11 @@ local SingleBlock = {
 }
 
 function SingleBlock:setWorkAllowed(allow)
-    self.block.setWorkAllowed(allow)
+    return self.block.setWorkAllowed(allow, self.block)
 end
 
 function SingleBlock:isWorkAllowed()
-    return self.block.isWorkAllowed()
+    return self.block:isWorkAllowed()
 end
 
 function SingleBlock:getAverageElectricInput()
@@ -36,7 +36,7 @@ function SingleBlock:getWorkMaxProgress()
 end
 
 function SingleBlock:getSensorInformation()
-    return self.block.getSensorInformation()
+    return self.block:getSensorInformation()
 end
 
 function SingleBlock:getEUOutputAverage()
@@ -64,7 +64,7 @@ function SingleBlock:getAverageElectricOutput()
 end
 
 function SingleBlock:hasWork()
-    return self.block.hasWork()
+    return self.block:hasWork()
 end
 
 function SingleBlock:getOutputAmperage()
@@ -88,10 +88,6 @@ local nMachinesNotFound = 0
 function SingleBlock:new(partialAdress, name)
     local machine = New(self)
 
-    if (partialAdress == "") then
-        partialAdress = nil
-    end
-
     local successfull =
         pcall(
         function()
@@ -102,9 +98,10 @@ function SingleBlock:new(partialAdress, name)
         nMachinesNotFound = nMachinesNotFound + 1
         Term.setCursor(1, 1)
         print("Failed to find the machine " .. partialAdress .. ". Failed " .. nMachinesNotFound .. " times.")
-        machine.block = self.mock:new()
+        machine.block = self.mock:new(partialAdress)
     end
 
+    machine.address = machine.block.address
     machine.name = name
 
     return machine
