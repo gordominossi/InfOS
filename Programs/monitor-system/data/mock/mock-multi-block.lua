@@ -19,7 +19,7 @@ function MockMultiBlock:getSensorInformation()
         mock.workProgress = 0
         mock.workMaxProgress = 0
     end
-    if mock.workAllowed and not mock.isBroken and math.random(1000) > 999 then
+    if mock.workAllowed and not mock.isBroken and math.random(1000) > 999 and not mock.workProgress then
         mock.workMaxProgress = math.random(500)
     end
     mock.isBroken = mock.isBroken or math.random(100000) > 99999
