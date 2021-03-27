@@ -3,23 +3,39 @@ New = require("utils.new")
 --
 
 local MockSingleBlock = {
-    name = "MockSingleBlock",
-    workAllowed = true,
-    workProgress = 3,
-    workMaxProgress = 4,
-    storedEU = 1234,
-    active = true,
-    outputVoltage = 0,
-    outputAmperage = 1,
-    EUCapacity = 2048
+    mocks = {}
 }
 
-function MockSingleBlock.setWorkAllowed(allow)
-    MockSingleBlock.workAllowed = allow
+function MockSingleBlock:getMock(address, name)
+    if not address then
+        return nil
+    end
+    if not self.mocks[address] then
+        self.mocks[address] = {
+            name = name or "MockSingleBlock",
+            workAllowed = true,
+            storedEU = 1234,
+            active = true,
+            outputVoltage = 0,
+            outputAmperage = 1,
+            EUCapacity = 2048,
+            workProgress = 0,
+            workMaxProgress = 0,
+            isBroken = false,
+            address = address
+        }
+    end
+    return self.mocks[address]
 end
 
-function MockSingleBlock.isWorkAllowed()
-    return MockSingleBlock.workAllowed
+function MockSingleBlock.setWorkAllowed(allow, self)
+    local mock = self:getMock(self.address)
+    mock.workAllowed = allow
+end
+
+function MockSingleBlock:isWorkAllowed()
+    local mock = self:getMock(self.address)
+    return mock.workAllowed
 end
 
 function MockSingleBlock.getAverageElectricInput()
@@ -74,8 +90,9 @@ function MockSingleBlock.getAverageElectricOutput()
     return 0.0
 end
 
-function MockSingleBlock.hasWork()
-    return MockSingleBlock.workProgress < MockSingleBlock.workMaxProgress
+function MockSingleBlock:hasWork()
+    local mock = self:getMock(self.address)
+    return mock.workProgress < mock.workMaxProgress
 end
 
 function MockSingleBlock.getOutputAmperage()
@@ -94,10 +111,8 @@ function MockSingleBlock.getEUMaxStored()
     return MockSingleBlock.EUCapacity
 end
 
-MockSingleBlock.__index = MockSingleBlock
-
-function MockSingleBlock:new()
-    return New(self)
+function MockSingleBlock:new(address)
+    return New(self, {address = address})
 end
 
 function MockSingleBlock:getEfficiencyPercentage()
