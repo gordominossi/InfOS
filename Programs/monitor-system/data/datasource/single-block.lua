@@ -33,6 +33,8 @@ function SingleBlock:new(partialAdress, name)
     return machine
 end
 
+-- Multiblocks
+
 function Parser.parseProgress(progressString)
     local current = string.sub(progressString, string.find(progressString, "%ba§"))
     current = tonumber((string.gsub(string.gsub(current, "a", ""), "§", "")))
@@ -66,6 +68,91 @@ function SingleBlock:getEnergyUsage() -- EU/t
     else
         return 0
     end
+end
+
+-- Energy provider
+
+function SingleBlock:getBatteryCharge(slot)
+    return self.block.getBatteryCharge(slot)
+end
+
+function SingleBlock:getAllBatteryCharges()
+    local batteryCharges = {}
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                table.insert(batteryCharges, self:getBatteryCharge(i))
+            end
+        )
+        if (not successfull) then
+            return batteryCharges
+        end
+
+        i = i + 1
+    end
+end
+
+function SingleBlock:getAllBatteryMaxCharges()
+    local batteryCharges = {}
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                table.insert(batteryCharges, self:getMaxBatteryCharge(i))
+            end
+        )
+        if (not successfull) then
+            return batteryCharges
+        end
+
+        i = i + 1
+    end
+end
+
+function SingleBlock:getBatteryChargesSum()
+    local batterySum = 0
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                batterySum = batterySum + self:getBatteryCharge(i)
+            end
+        )
+        if (not successfull) then
+            return batterySum
+        end
+
+        i = i + 1
+    end
+end
+
+function SingleBlock:getMaxBatteryChargesSum()
+    local batterySum = 0
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                batterySum = batterySum + self:getMaxBatteryCharge(i)
+            end
+        )
+        if (not successfull) then
+            return batterySum
+        end
+
+        i = i + 1
+    end
+end
+
+function SingleBlock:getTotalEnergy()
+    return {
+        current = self:getBatteryChargesSum() + self:getStoredEU(),
+        maximum = self:getMaxBatteryChargesSum() + self:getEUCapacity()
+    }
 end
 
 return SingleBlock

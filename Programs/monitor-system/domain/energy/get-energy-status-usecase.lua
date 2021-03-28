@@ -5,8 +5,8 @@ Machine = require("data.datasource.machine")
 local function exec(address, name)
     local energyBuffer = Machine.getMachine(address, name, Machine.types.energy)
 
-    local consumption = energyBuffer:getAverageInput()
-    local production = energyBuffer:getAverageOutput()
+    local consumption = energyBuffer:getAverageElectricInput()
+    local production = energyBuffer:getAverageElectricOutput()
     local changeRate = production - consumption
 
     local totalEnergy = energyBuffer:getTotalEnergy()

@@ -87,8 +87,9 @@ function MockSingleBlock.getEUInputAverage()
     return MockSingleBlock.EUInputAverage
 end
 
-function MockSingleBlock.getStoredEU()
-    return MockSingleBlock.storedEU
+function MockSingleBlock:getStoredEU()
+    local mock = self:getMock(self.address)
+    return mock.storedEU
 end
 
 function MockSingleBlock.isMachineActive()
@@ -112,8 +113,9 @@ function MockSingleBlock.getOutputAmperage()
     return MockSingleBlock.outputAmperage
 end
 
-function MockSingleBlock.getEUCapacity()
-    return MockSingleBlock.EUCapacity
+function MockSingleBlock:getEUCapacity()
+    local mock = self:getMock(self.address)
+    return mock.EUCapacity
 end
 
 function MockSingleBlock.getWorkProgress()
