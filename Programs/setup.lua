@@ -1,21 +1,36 @@
--- wget https://raw.githubusercontent.com/gordominossi/InfOS/master/Programs/setup.lua -f
+-- wget https://raw.githubusercontent.com/gordominossi/InfOS/master/setup.lua -f
 local shell = require("shell")
 
 local tarMan = "https://raw.githubusercontent.com/mpmxyz/ocprograms/master/usr/man/tar.man"
 local tarBin = "https://raw.githubusercontent.com/mpmxyz/ocprograms/master/home/bin/tar.lua"
 
 shell.setWorkingDirectory("/usr/man")
-shell.execute("wget " .. tarMan .. " -f")
+shell.execute("wget -fq " .. tarMan)
 shell.setWorkingDirectory("/bin")
-shell.execute("wget " .. tarBin .. " -f")
+shell.execute("wget -fq " .. tarBin)
 
-local InfOS = "https://github.com/gordominossi/InfOS/releases/download/v0.1/InfOS.tar"
+local InfOS = "https://github.com/gordominossi/InfOS/releases/latest/download/InfOS.tar"
 
-shell.setWorkingDirectory("/home")
-print("Updating InfOS")
-shell.execute("wget " .. InfOS .. " -f")
-shell.execute("tar -xf InfOS.tar")
+local successfull =
+    pcall(
+    function()
+        shell.execute("rm -rf /home/InfOS")
+        shell.execute("mkdir /home/InfOS")
 
-shell.setWorkingDirectory("/home/InfOS")
-shell.execute("ln -s Libraries/ ../lib")
-shell.execute("ln -s Programs/config Programs/monitor-system/config")
+        shell.setWorkingDirectory("/home/InfOS")
+        print("Downloading InfOS")
+        shell.execute("wget -fq " .. InfOS .. " -f")
+        print("Extracting")
+        shell.execute("tar -xf InfOS.tar")
+        shell.execute("rm -f InfOS.tar")
+        shell.execute("rm -rf /home/lib")
+        shell.execute("cp -r lib /home/lib")
+        shell.execute("cp -f .shrc /home/.shrc")
+        shell.execute("cp -f setup.lua /home/setup.lua")
+
+        print("Success!\n")
+    end
+)
+if (not successfull) then
+    print("Update failed")
+end
