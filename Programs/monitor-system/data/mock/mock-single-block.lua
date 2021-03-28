@@ -134,4 +134,20 @@ function MockSingleBlock:getEfficiencyPercentage()
     return 100
 end
 
+function MockSingleBlock.getBatteryCharge(slot)
+    if slot > 16 then
+        return nil
+    else
+        return 1000000
+    end
+end
+
+function MockSingleBlock.getMaxBatteryCharge(slot)
+    if slot > 16 then
+        return nil
+    else
+        return 1000000
+    end
+end
+
 return MockSingleBlock

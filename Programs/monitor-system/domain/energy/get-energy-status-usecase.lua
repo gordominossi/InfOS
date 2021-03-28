@@ -3,7 +3,7 @@ Machine = require("data.datasource.machine")
 --
 
 local function exec(address, name)
-    local energyBuffer = Machine.getMachine(address, name, Machine.types.energy)
+    local energyBuffer = Machine.getMachine(address, name)
 
     local consumption = energyBuffer:getAverageElectricInput()
     local production = energyBuffer:getAverageElectricOutput()
