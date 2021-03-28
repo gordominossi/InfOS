@@ -25,15 +25,13 @@ local function exec(cleanroomAddresses)
         end
     end
     if (tonumber(cleanroom:getEfficiencyPercentage()) < 100) then
-        if (not cleanroom.isHalted) then
+        if (cleanroom:isWorkAllowed()) then
             halt(machines)
-            cleanroom.isHalted = true
+            cleanroom.setWorkAllowed(false, cleanroom)
         end
     else
-        if (cleanroom.isHalted) then
-            resume(machines)
-            cleanroom.isHalted = false
-        end
+        resume(machines)
+        cleanroom.isHalted = false
     end
 end
 
