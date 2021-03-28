@@ -2,17 +2,17 @@
 New = require("utils.new")
 --
 
-local MockSingleBlock = {
+local mockMachine = {
     mocks = {}
 }
 
-function MockSingleBlock:getMock(address, name)
+function mockMachine:getMock(address, name)
     if not address then
         return nil
     end
     if not self.mocks[address] then
         self.mocks[address] = {
-            name = name or "MockSingleBlock",
+            name = name or "fake machine",
             workAllowed = true,
             storedEU = 1234,
             active = true,
@@ -28,7 +28,7 @@ function MockSingleBlock:getMock(address, name)
     return self.mocks[address]
 end
 
-function MockSingleBlock.setWorkAllowed(allow, self)
+function mockMachine.setWorkAllowed(allow, self)
     local mock = self:getMock(self.address, self.name)
     if mock.isBroken then
         mock.isBroken = false
@@ -36,28 +36,28 @@ function MockSingleBlock.setWorkAllowed(allow, self)
     mock.workAllowed = allow
 end
 
-function MockSingleBlock:isWorkAllowed()
+function mockMachine:isWorkAllowed()
     local mock = self:getMock(self.address)
     return mock.workAllowed
 end
 
-function MockSingleBlock.getAverageElectricInput()
+function mockMachine.getAverageElectricInput()
     return 0.0
 end
 
-function MockSingleBlock.getOwnerName()
+function mockMachine.getOwnerName()
     return "gordominossi"
 end
 
-function MockSingleBlock.getEUStored()
-    return MockSingleBlock.storedEU
+function mockMachine.getEUStored()
+    return mockMachine.storedEU
 end
 
-function MockSingleBlock.getWorkMaxProgress()
-    return MockSingleBlock.workMaxProgress
+function mockMachine.getWorkMaxProgress()
+    return mockMachine.workMaxProgress
 end
 
-function MockSingleBlock:getSensorInformation()
+function mockMachine:getSensorInformation()
     local mock = self:getMock(self.address, self.name)
     mock.workProgress = mock.workProgress + 1
     if mock.workProgress > mock.workMaxProgress then
@@ -79,62 +79,62 @@ function MockSingleBlock:getSensorInformation()
     }
 end
 
-function MockSingleBlock.getEUOutputAverage()
-    return MockSingleBlock.EUOutputAverage
+function mockMachine.getEUOutputAverage()
+    return mockMachine.EUOutputAverage
 end
 
-function MockSingleBlock.getEUInputAverage()
-    return MockSingleBlock.EUInputAverage
+function mockMachine.getEUInputAverage()
+    return mockMachine.EUInputAverage
 end
 
-function MockSingleBlock:getStoredEU()
+function mockMachine:getStoredEU()
     local mock = self:getMock(self.address)
     return mock.storedEU
 end
 
-function MockSingleBlock.isMachineActive()
-    return MockSingleBlock.active
+function mockMachine.isMachineActive()
+    return mockMachine.active
 end
 
-function MockSingleBlock.getOutputVoltage()
-    return MockSingleBlock.outputVoltage
+function mockMachine.getOutputVoltage()
+    return mockMachine.outputVoltage
 end
 
-function MockSingleBlock.getAverageElectricOutput()
+function mockMachine.getAverageElectricOutput()
     return 0.0
 end
 
-function MockSingleBlock:hasWork()
+function mockMachine:hasWork()
     local mock = self:getMock(self.address)
     return mock.workProgress < mock.workMaxProgress
 end
 
-function MockSingleBlock.getOutputAmperage()
-    return MockSingleBlock.outputAmperage
+function mockMachine.getOutputAmperage()
+    return mockMachine.outputAmperage
 end
 
-function MockSingleBlock:getEUCapacity()
+function mockMachine:getEUCapacity()
     local mock = self:getMock(self.address)
     return mock.EUCapacity
 end
 
-function MockSingleBlock.getWorkProgress()
-    return MockSingleBlock.workProgress
+function mockMachine.getWorkProgress()
+    return mockMachine.workProgress
 end
 
-function MockSingleBlock.getEUMaxStored()
-    return MockSingleBlock.EUCapacity
+function mockMachine.getEUMaxStored()
+    return mockMachine.EUCapacity
 end
 
-function MockSingleBlock:new(address, name)
+function mockMachine:new(address, name)
     return New(self, {address = address, name = name})
 end
 
-function MockSingleBlock:getEfficiencyPercentage()
+function mockMachine:getEfficiencyPercentage()
     return 100
 end
 
-function MockSingleBlock.getBatteryCharge(slot)
+function mockMachine.getBatteryCharge(slot)
     if slot > 16 then
         return nil
     else
@@ -142,7 +142,7 @@ function MockSingleBlock.getBatteryCharge(slot)
     end
 end
 
-function MockSingleBlock.getMaxBatteryCharge(slot)
+function mockMachine.getMaxBatteryCharge(slot)
     if slot > 16 then
         return nil
     else
@@ -150,4 +150,4 @@ function MockSingleBlock.getMaxBatteryCharge(slot)
     end
 end
 
-return MockSingleBlock
+return mockMachine

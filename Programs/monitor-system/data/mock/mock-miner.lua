@@ -1,11 +1,11 @@
 -- Import section
 Inherits = require("utils.inherits")
-MockSingleBlock = require("data.mock.mock-single-block")
+MockMachine = require("data.mock.mock-machine")
 --
 
 local MockMiner =
     Inherits(
-    MockSingleBlock,
+    MockMachine,
     {
         name = "MockMiner"
     }
