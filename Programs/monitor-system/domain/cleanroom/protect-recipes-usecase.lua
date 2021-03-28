@@ -6,34 +6,32 @@ Alarm = require("api.sound.alarm")
 local function halt(machines)
     Alarm()
     for _, machine in ipairs(machines) do
-        machine:setWorkAllowed(false)
+        machine.setWorkAllowed(false, machine)
     end
 end
 
 local function resume(machines)
     for _, machine in ipairs(machines) do
-        machine:setWorkAllowed(true)
+        machine.setWorkAllowed(true, machine)
     end
 end
 
 local function exec(cleanroomAddresses)
-    local cleanroom = Machine.getMachine(cleanroomAddresses.cleanroom, "Cleanroom", Machine.types.multiblock)
+    local cleanroom = Machine.getMachine(cleanroomAddresses.cleanroom, "Cleanroom")
     local machines = {}
     for name, address in pairs(cleanroomAddresses) do
         if name ~= "cleanroom" then
-            table.insert(machines, Machine.getMachine(address, name, Machine.types.singleblock))
+            table.insert(machines, Machine.getMachine(address, name))
         end
     end
     if (tonumber(cleanroom:getEfficiencyPercentage()) < 100) then
-        if (not cleanroom.isHalted) then
+        if (cleanroom:isWorkAllowed()) then
             halt(machines)
-            cleanroom.isHalted = true
+            cleanroom.setWorkAllowed(false, cleanroom)
         end
     else
-        if (cleanroom.isHalted) then
-            resume(machines)
-            cleanroom.isHalted = false
-        end
+        resume(machines)
+        cleanroom.isHalted = false
     end
 end
 

@@ -1,46 +1,173 @@
 -- Import section
-local mock = require("data.mock.mock-energy-provider")
-EnergyProvider = require("data.datasource.energy-provider")
-SingleBlock = require("data.datasource.single-block")
-MultiBlock = require("data.datasource.multi-block")
-Inherits = require("utils.inherits")
+Parser = require("utils.parser")
+Component = require("component")
+New = require("utils.new")
+Term = require("term")
+
+local mock = require("data.mock.mock-machine")
 --
 
-local machine = Inherits(EnergyProvider)
-local machines = {}
-
-machine.types = {
-    energy = "energy",
-    multiblock = "multiblock",
-    singleblock = "singleblock"
+local machine = {
+    mock = mock,
+    name = "unnamed machine"
 }
+
+local machines = {}
 
 machine.states = {
     ON = {name = "ON", color = Colors.workingColor},
-    FULL = {name = "FULL", color = Colors.workingColor},
     IDLE = {name = "IDLE", color = Colors.idleColor},
-    FILLING = {name = "FILLING", color = Colors.idleColor},
     OFF = {name = "OFF", color = Colors.offColor},
-    DRAINING = {name = "DRAINING", color = Colors.offColor},
     BROKEN = {name = "BROKEN", color = Colors.errorColor},
-    EMPTY = {name = "EMPTY", color = Colors.errorColor}
 }
 
-function machine.getMachine(address, name, type)
+function machine.getMachine(address, name)
     -- if machines[address] then
     --     return machines[address]
     -- else
-        local mach = {}
-        if type == machine.types.energy then
-            mach = EnergyProvider:new(address, name)
-        elseif type == machine.types.multiblock then
-            mach = MultiBlock:new(address, name)
-        elseif type == machine.types.singleblock then
-            mach = SingleBlock:new(address, name)
-        end
+        local mach = machine:new(address, name)
         machines[address] = mach
         return mach
     -- end
+end
+
+local nMachinesNotFound = 0
+
+function machine:new(partialAdress, name)
+    local machine = {}
+
+    local successfull =
+        pcall(
+        function()
+            machine = New(self, Component.proxy(Component.get(partialAdress)))
+        end
+    )
+    if (not successfull) then
+        nMachinesNotFound = nMachinesNotFound + 1
+        Term.setCursor(1, 1)
+        print("Failed to find the machine " .. partialAdress .. ". Failed " .. nMachinesNotFound .. " times.")
+        machine = New(self, self.mock:new(partialAdress, name))
+    end
+
+    return machine
+end
+
+-- Multiblocks
+
+function Parser.parseProgress(progressString)
+    local current = string.sub(progressString, string.find(progressString, "%ba§"))
+    current = tonumber((string.gsub(string.gsub(current, "a", ""), "§", "")))
+
+    local maximum = string.sub(progressString, string.find(progressString, "%be§", (string.find(progressString, "/"))))
+    maximum = tonumber((string.gsub(string.gsub(maximum, "e", ""), "§", "")))
+
+    return {current = current, maximum = maximum}
+end
+
+function machine:getNumberOfProblems()
+    local sensorInformation = self:getSensorInformation()
+    return Parser.parseProblems(sensorInformation[5])
+end
+
+function machine:getProgress()
+    local sensorInformation = self:getSensorInformation()
+    return Parser.parseProgress(sensorInformation[1])
+end
+
+function machine:getEfficiencyPercentage()
+    local sensorInformation = self:getSensorInformation()
+    return Parser.parseEfficiency(sensorInformation[5])
+end
+
+function machine:getEnergyUsage() -- EU/t
+    local maxProgress = self:getWorkMaxProgress() or 0
+    if maxProgress > 0 then
+        local sensorInformation = self:getSensorInformation()
+        return Parser.parseProbablyUses(sensorInformation[3])
+    else
+        return 0
+    end
+end
+
+-- Energy provider
+
+function machine:getAllBatteryCharges()
+    local batteryCharges = {}
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                table.insert(batteryCharges, machine.getBatteryCharge(i, self))
+            end
+        )
+        if (not successfull) then
+            return batteryCharges
+        end
+
+        i = i + 1
+    end
+end
+
+function machine:getAllBatteryMaxCharges()
+    local batteryCharges = {}
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                table.insert(batteryCharges, machine.getMaxBatteryCharge(i, self))
+            end
+        )
+        if (not successfull) then
+            return batteryCharges
+        end
+
+        i = i + 1
+    end
+end
+
+function machine:getBatteryChargesSum()
+    local batterySum = 0
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                batterySum = batterySum + machine.getBatteryCharge(i, self)
+            end
+        )
+        if (not successfull) then
+            return batterySum
+        end
+
+        i = i + 1
+    end
+end
+
+function machine:getMaxBatteryChargesSum()
+    local batterySum = 0
+    local i = 1
+    while true do
+        local successfull =
+            pcall(
+            function()
+                batterySum = batterySum + machine.getMaxBatteryCharge(i, self)
+            end
+        )
+        if (not successfull) then
+            return batterySum
+        end
+
+        i = i + 1
+    end
+end
+
+function machine:getTotalEnergy()
+    return {
+        current = self:getBatteryChargesSum() + self:getStoredEU(),
+        maximum = self:getMaxBatteryChargesSum() + self:getEUCapacity()
+    }
 end
 
 return machine

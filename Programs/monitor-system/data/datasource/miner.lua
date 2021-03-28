@@ -1,13 +1,13 @@
 -- Import section
 Parser = require("utils.parser")
 Inherits = require("utils.inherits")
-SingleBlock = require("data.datasource.single-block")
+Machine = require("data.datasource.machine")
 local mock = require("data.mock.mock-miner")
 --
 
 local Miner =
     Inherits(
-    SingleBlock,
+    Machine,
     {
         mock = mock,
         name = "MultiBlock"
