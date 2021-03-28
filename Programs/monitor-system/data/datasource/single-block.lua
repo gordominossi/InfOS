@@ -98,7 +98,7 @@ function SingleBlock:new(partialAdress, name)
         nMachinesNotFound = nMachinesNotFound + 1
         Term.setCursor(1, 1)
         print("Failed to find the machine " .. partialAdress .. ". Failed " .. nMachinesNotFound .. " times.")
-        machine.block = self.mock:new(partialAdress)
+        machine.block = self.mock:new(partialAdress, name)
     end
 
     machine.address = machine.block.address

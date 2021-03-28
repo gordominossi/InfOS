@@ -29,7 +29,10 @@ function MockSingleBlock:getMock(address, name)
 end
 
 function MockSingleBlock.setWorkAllowed(allow, self)
-    local mock = self:getMock(self.address)
+    local mock = self:getMock(self.address, self.name)
+    if mock.isBroken then
+        mock.isBroken = false
+    end
     mock.workAllowed = allow
 end
 
@@ -54,14 +57,24 @@ function MockSingleBlock.getWorkMaxProgress()
     return MockSingleBlock.workMaxProgress
 end
 
-function MockSingleBlock.getSensorInformation()
+function MockSingleBlock:getSensorInformation()
+    local mock = self:getMock(self.address, self.name)
+    mock.workProgress = mock.workProgress + 1
+    if mock.workProgress > mock.workMaxProgress then
+        mock.workProgress = 0
+        mock.workMaxProgress = 0
+    end
+    if mock.workAllowed and not mock.isBroken and math.random(1000) > 999 and not mock.workProgress then
+        mock.workMaxProgress = math.random(500)
+    end
+    mock.isBroken = mock.isBroken or math.random(100000) > 99999
     return {
-        "§9gt.recipe.laserengraver§r",
-        "Progress:",
-        "§a2§r s / §e5§r s",
-        "Stored Energy:",
-        "§a1000§r EU / §e1000§r EU",
-        "Probably uses: §c0§r EU/t at §c0§r A",
+        "Progress: §a" .. mock.workProgress .. "§r s / §e" .. mock.workMaxProgress .. "§r s",
+        "Stored Energy: §a1000§r EU / §e1000§r EU",
+        "Probably uses: §c4§r EU/t",
+        "Max Energy Income: §e128§r EU/t(x2A) Tier: §eMV§r",
+        "Problems: §c" .. (mock.isBroken and 1 or 0) .. "§r Efficiency: §e" .. (mock.isBroken and 0 or 100) .. ".0§r %",
+        "Pollution reduced to: §a0§r %",
         n = 6
     }
 end
@@ -111,8 +124,8 @@ function MockSingleBlock.getEUMaxStored()
     return MockSingleBlock.EUCapacity
 end
 
-function MockSingleBlock:new(address)
-    return New(self, {address = address})
+function MockSingleBlock:new(address, name)
+    return New(self, {address = address, name = name})
 end
 
 function MockSingleBlock:getEfficiencyPercentage()

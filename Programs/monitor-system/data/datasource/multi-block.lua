@@ -2,14 +2,12 @@
 Parser = require("utils.parser")
 Inherits = require("utils.inherits")
 SingleBlock = require("data.datasource.single-block")
-local mock = require("data.mock.mock-multi-block")
 --
 
 local MultiBlock =
     Inherits(
     SingleBlock,
     {
-        mock = mock,
         name = "MultiBlock"
     }
 )
