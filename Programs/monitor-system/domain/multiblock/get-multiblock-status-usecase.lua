@@ -3,7 +3,7 @@ Machine = require("data.datasource.machine")
 --
 
 local function exec(address, name)
-    local multiblock = Machine.getMachine(address, name, Machine.types.multiblock)
+    local multiblock = Machine.getMachine(address, name, Machine.types.singleblock)
     local status = {}
     local problems = multiblock:getNumberOfProblems()
 

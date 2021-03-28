@@ -2,7 +2,6 @@
 local mock = require("data.mock.mock-energy-provider")
 EnergyProvider = require("data.datasource.energy-provider")
 SingleBlock = require("data.datasource.single-block")
-MultiBlock = require("data.datasource.multi-block")
 Inherits = require("utils.inherits")
 --
 
@@ -11,7 +10,6 @@ local machines = {}
 
 machine.types = {
     energy = "energy",
-    multiblock = "multiblock",
     singleblock = "singleblock"
 }
 
@@ -33,9 +31,7 @@ function machine.getMachine(address, name, type)
         local mach = {}
         if type == machine.types.energy then
             mach = EnergyProvider:new(address, name)
-        elseif type == machine.types.multiblock then
-            mach = MultiBlock:new(address, name)
-        elseif type == machine.types.singleblock then
+        else
             mach = SingleBlock:new(address, name)
         end
         machines[address] = mach

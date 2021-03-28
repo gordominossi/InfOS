@@ -17,7 +17,7 @@ local function resume(machines)
 end
 
 local function exec(cleanroomAddresses)
-    local cleanroom = Machine.getMachine(cleanroomAddresses.cleanroom, "Cleanroom", Machine.types.multiblock)
+    local cleanroom = Machine.getMachine(cleanroomAddresses.cleanroom, "Cleanroom", Machine.types.singleblock)
     local machines = {}
     for name, address in pairs(cleanroomAddresses) do
         if name ~= "cleanroom" then
