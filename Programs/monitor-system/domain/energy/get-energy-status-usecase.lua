@@ -1,5 +1,6 @@
 -- Import section
 Machine = require("data.datasource.machine")
+Utility = require("utils.utility")
 --
 
 local function exec(address, name)
@@ -17,13 +18,13 @@ local function exec(address, name)
 
     local state = {}
     if (currentEnergy == maximumEnergy) then
-        state = {name = (changeRate > 0 and "+" or "") .. changeRate .. " EU/s", color = Colors.workingColor}
+        state = {name = (changeRate > 0 and "+" or "") .. Utility.splitNumber(math.floor(changeRate)) .. " EU/s", color = Colors.workingColor}
     elseif currentEnergy == 0 then
-        state = {name = changeRate .. " EU/s", color = Colors.errorColor}
+        state = {name = Utility.splitNumber(math.floor(changeRate)) .. " EU/s", color = Colors.errorColor}
     elseif changeRate > 0 then
-        state = {name = "+" .. changeRate .. " EU/s", color = Colors.idleColor}
+        state = {name = "+" .. Utility.splitNumber(math.floor(changeRate)) .. " EU/s", color = Colors.idleColor}
     else
-        state = {name = changeRate .. " EU/s", color = Colors.offColor}
+        state = {name = Utility.splitNumber(math.floor(changeRate)) .. " EU/s", color = Colors.offColor}
     end
 
     local timeToFull = changeRate > 0 and math.floor((energyLimit - currentEnergy) / changeRate) or nil

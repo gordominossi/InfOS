@@ -14,11 +14,13 @@ function mockMachine:getMock(address, name)
         self.mocks[address] = {
             name = name or "fake machine",
             workAllowed = true,
-            storedEU = 1234,
+            storedEU = math.random(1608388608),
             active = true,
+            inputAverage = math.random(16000),
+            outputAverage = math.random(16000),
             outputVoltage = 0,
             outputAmperage = 1,
-            EUCapacity = 2048,
+            EUCapacity = 1608388608,
             workProgress = 0,
             workMaxProgress = 0,
             isBroken = false,
@@ -41,16 +43,16 @@ function mockMachine:isWorkAllowed()
     return mock.workAllowed
 end
 
-function mockMachine.getAverageElectricInput()
-    return 0.0
+function mockMachine:getAverageElectricInput()
+    return self:getEUInputAverage()
 end
 
 function mockMachine.getOwnerName()
     return "gordominossi"
 end
 
-function mockMachine.getEUStored()
-    return mockMachine.storedEU
+function mockMachine:getEUStored()
+    return self:getStoredEU()
 end
 
 function mockMachine.getWorkMaxProgress()
@@ -64,7 +66,7 @@ function mockMachine:getSensorInformation()
         mock.workProgress = 0
         mock.workMaxProgress = 0
     end
-    if mock.workAllowed and not mock.isBroken and math.random(1000) > 999 and not mock.workProgress then
+    if mock.workAllowed and not mock.isBroken and math.random(1000) > 999 and mock.workProgress == 0 then
         mock.workMaxProgress = math.random(500)
     end
     mock.isBroken = mock.isBroken or math.random(100000) > 99999
@@ -79,17 +81,22 @@ function mockMachine:getSensorInformation()
     }
 end
 
-function mockMachine.getEUOutputAverage()
-    return mockMachine.EUOutputAverage
+function mockMachine:getEUOutputAverage()
+    local mock = self:getMock(self.address)
+    mock.EUOutputAverage = mock.EUOutputAverage + math.random(-100, 100)
+    return mock.EUOutputAverage
 end
 
-function mockMachine.getEUInputAverage()
-    return mockMachine.EUInputAverage
+function mockMachine:getEUInputAverage()
+    local mock = self:getMock(self.address)
+    mock.inputAverage = mock.inputAverage + math.random(-100, 100)
+    return mock.inputAverage
 end
 
 function mockMachine:getStoredEU()
     local mock = self:getMock(self.address)
-    return mock.storedEU
+    mock.workProgress = mock.storedEU + mock.inputAverage - mock.outputAverage
+    return mock.workProgress
 end
 
 function mockMachine.isMachineActive()
@@ -122,8 +129,8 @@ function mockMachine.getWorkProgress()
     return mockMachine.workProgress
 end
 
-function mockMachine.getEUMaxStored()
-    return mockMachine.EUCapacity
+function mockMachine:getEUMaxStored()
+    return self:getEUCapacity()
 end
 
 function mockMachine:new(address, name)
@@ -134,11 +141,12 @@ function mockMachine:getEfficiencyPercentage()
     return 100
 end
 
-function mockMachine.getBatteryCharge(slot)
+function mockMachine.getBatteryCharge(slot, self)
+    local mock = self:getMock(self.address)
     if slot > 16 then
         return nil
     else
-        return 1000000
+        return 1000000 / mock.workProgress
     end
 end
 

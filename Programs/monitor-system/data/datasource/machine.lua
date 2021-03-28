@@ -91,10 +91,6 @@ end
 
 -- Energy provider
 
-function machine:getBatteryCharge(slot)
-    return self.block.getBatteryCharge(slot)
-end
-
 function machine:getAllBatteryCharges()
     local batteryCharges = {}
     local i = 1
@@ -102,7 +98,7 @@ function machine:getAllBatteryCharges()
         local successfull =
             pcall(
             function()
-                table.insert(batteryCharges, self:getBatteryCharge(i))
+                table.insert(batteryCharges, machine.getBatteryCharge(i, self))
             end
         )
         if (not successfull) then
@@ -120,7 +116,7 @@ function machine:getAllBatteryMaxCharges()
         local successfull =
             pcall(
             function()
-                table.insert(batteryCharges, self:getMaxBatteryCharge(i))
+                table.insert(batteryCharges, machine.getMaxBatteryCharge(i, self))
             end
         )
         if (not successfull) then
@@ -138,7 +134,7 @@ function machine:getBatteryChargesSum()
         local successfull =
             pcall(
             function()
-                batterySum = batterySum + self:getBatteryCharge(i)
+                batterySum = batterySum + machine.getBatteryCharge(i, self)
             end
         )
         if (not successfull) then
@@ -156,7 +152,7 @@ function machine:getMaxBatteryChargesSum()
         local successfull =
             pcall(
             function()
-                batterySum = batterySum + self:getMaxBatteryCharge(i)
+                batterySum = batterySum + machine.getMaxBatteryCharge(i, self)
             end
         )
         if (not successfull) then
