@@ -4,7 +4,7 @@ Machine = require("data.datasource.machine")
 
 local function exec(address, name)
     local multiblock = Machine.getMachine(address, name)
-    local status = {}
+    if not multiblock then return end
     local problems = multiblock:getNumberOfProblems()
 
     local state = {}
@@ -24,7 +24,7 @@ local function exec(address, name)
 
     local totalProgress = multiblock:getProgress()
 
-    status = {
+    local status = {
         progress = totalProgress.current,
         maxProgress = totalProgress.maximum,
         problems = problems,

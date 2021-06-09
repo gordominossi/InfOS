@@ -18,6 +18,7 @@ end
 
 local function exec(cleanroomAddresses)
     local cleanroom = Machine.getMachine(cleanroomAddresses.cleanroom, "Cleanroom")
+    if not cleanroom then return end
     local machines = {}
     for name, address in pairs(cleanroomAddresses) do
         if name ~= "cleanroom" then

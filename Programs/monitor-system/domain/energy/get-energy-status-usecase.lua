@@ -5,6 +5,7 @@ Utility = require("utils.utility")
 
 local function exec(address, name)
     local energyBuffer = Machine.getMachine(address, name)
+    if not energyBuffer then return end
 
     local consumption = energyBuffer:getAverageElectricInput()
     local production = energyBuffer:getAverageElectricOutput()

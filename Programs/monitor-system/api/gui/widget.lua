@@ -82,8 +82,17 @@ function widget.draw(self, index)
 
     widget.drawBaseWidget(x, y, width, height, self.name)
 
+    self.progress = self.progress or 0
+    self.maxProgress = self.maxProgress or 0
     drawProgress(x, 2 * y, width - 1, 2 * (height - 1), 1, 1, Colors.progressBackground)
-    drawProgress(x, 2 * y, width - 1, 2 * (height - 1), self.progress, self.maxProgress, Colors.barColor)
+    drawProgress(x, 2 * y, width - 1, 2 * (height - 1), self.progress or 0, self.maxProgress or 0, Colors.barColor)
+
+    if not self.state or not self.state.name then
+        self.state = {
+            name = "NOT FOUND",
+            color = Colors.errorColor
+        }
+    end
     DoubleBuffer.drawText(x + 4, y + 7, self.state.color, self.state.name)
     if self.state == states[4] then
         drawProgress(x, 2 * y, width - 1, 2 * (height - 1), 1, 1, Colors.errorColor)
