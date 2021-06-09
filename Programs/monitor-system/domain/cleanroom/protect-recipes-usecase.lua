@@ -33,6 +33,7 @@ local function exec(cleanroomAddresses)
         resume(machines)
         cleanroom.isHalted = false
     end
+    return cleanroom.isHalted
 end
 
 return exec

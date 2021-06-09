@@ -1,20 +1,23 @@
 -- Import section
 
-GUI = require("api.gui")
--- GUI = require("api.power")
+Power = require("api.power")
 Machines = require("api.machine")
--- GUI = require("api.notification")
--- GUI = require("api.stock")
-
+-- Stock = require("api.stock")
+-- Notificaction = require("api.notification")
+GUI = require("api.gui")
 --
 
-GUI.setup()
+local statuses = {}
+statuses.powerStatus = Power.update()
+statuses.machineStatus = Machines.update(statuses.powerStatus)
+
+GUI.setup(statuses)
 
 while true do
-    GUI.update()
-    -- Power.update()
-    Machines.update()
-    -- Notifications.update()
+    statuses.powerStatus = Power.update()
+    statuses.machineStatus = Machines.update(statuses.powerStatus)
     -- Stock.update()
+    -- Notifications.update(statuses)
+    GUI.update(statuses)
     os.sleep(0)
 end

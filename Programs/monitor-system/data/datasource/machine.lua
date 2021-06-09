@@ -1,10 +1,13 @@
 -- Import section
+
 Parser = require("utils.parser")
 Component = require("component")
 New = require("utils.new")
 Term = require("term")
+Colors = require("graphics.colors")
 
 local mock = require("data.mock.mock-machine")
+
 --
 
 local machine = {

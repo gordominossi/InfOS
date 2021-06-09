@@ -75,9 +75,9 @@ function widget.draw(self, index)
         index = 10
     end
     local scale = self.scale or 1
-    local width = Constants.baseWidth * scale
-    local height = Constants.baseHeight
-    local x = Constants.baseWidth + Constants.baseWidth * ((index - 1) % 3)
+    local width = Constants.widgetBaseWidth * scale
+    local height = Constants.widgetBaseHeight
+    local x = Constants.widgetBaseWidth + Constants.widgetBaseWidth * ((index - 1) % 3)
     local y = height * math.ceil((index) / 3)
 
     widget.drawBaseWidget(x, y, width, height, self.name)
@@ -118,10 +118,10 @@ end
 
 function widget.clear()
     DoubleBuffer.drawRectangle(
-        Constants.baseWidth,
-        Constants.baseHeight,
-        3 * Constants.baseWidth,
-        4 * Constants.baseHeight,
+        Constants.widgetBaseWidth,
+        Constants.widgetBaseHeight,
+        3 * Constants.widgetBaseWidth,
+        4 * Constants.widgetBaseHeight,
         Colors.background,
         Colors.background,
         "█"
@@ -254,10 +254,9 @@ function widget.fakePowerWidget()
     return fake.powerWidget.create()
 end
 
-function widget.createPowerWidget(address)
-    local getPowerStatus = require("domain.energy.get-energy-status-usecase")
-    local function update(self)
-        for key, value in pairs(getPowerStatus(address, self.name)) do
+function widget.createPowerWidget(powerStatus)
+    local function update(self, powerStatus)
+        for key, value in pairs(powerStatus) do
             self[key] = value
         end
     end
@@ -277,7 +276,7 @@ function widget.createPowerWidget(address)
         getMiddleString = getMiddleString,
         draw = widget.draw
     }
-    powerWidget:update()
+    powerWidget:update(powerStatus)
 
     return powerWidget
 end
