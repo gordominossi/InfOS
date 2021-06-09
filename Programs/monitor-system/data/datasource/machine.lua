@@ -5,6 +5,7 @@ Component = require("component")
 New = require("utils.new")
 Term = require("term")
 Colors = require("graphics.colors")
+Filesystem = require("filesystem")
 
 local mock = require("data.mock.mock-machine")
 
@@ -35,19 +36,19 @@ function machine.getMachine(address, name)
 end
 
 function machine:new(partialAdress, name)
-    local machine = {}
+    local mach = nil
 
     local successfull =
         pcall(
         function()
-            machine = New(self, Component.proxy(Component.get(partialAdress)))
+            mach = New(self, Component.proxy(Component.get(partialAdress)))
         end
     )
-    if (not successfull) then
-        machine = New(self, self.mock:new(partialAdress, name))
+    if (not successfull and Filesystem.exists("/home/InfOS/.gitignore")) then
+        mach = New(self, self.mock:new(partialAdress, name))
     end
 
-    return machine
+    return mach
 end
 
 -- Multiblocks
