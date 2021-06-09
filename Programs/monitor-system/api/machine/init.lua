@@ -14,7 +14,7 @@ function machine.update(powerStatus)
     -- TODO: turn off machines before power runs out
     local cleanroomStatus = protectCleanroomUsecase(cleanroomAddresses)
     local multiblockStatus = {}
-    for name, address in ipairs(multiblockAddresses) do
+    for name, address in pairs(multiblockAddresses) do
         multiblockStatus[address] = getMultiblockStatusUsecase(address, name)
     end
     return {

@@ -93,7 +93,9 @@ local function drawNavigationButton(self, index)
     end
     local width = math.floor(0.3 * Constants.widgetBaseWidth)
     local height = math.floor(0.6 * Constants.widgetBaseHeight)
-    local x = math.floor((2.4 + 0.4 * index) * Constants.widgetBaseWidth) + math.floor((Constants.widgetBaseWidth - width) / 2)
+    local x =
+        math.floor((2.4 + 0.4 * index) * Constants.widgetBaseWidth) +
+        math.floor((Constants.widgetBaseWidth - width) / 2)
     local y = 4 * Constants.widgetBaseHeight + math.floor((Constants.widgetBaseHeight - height) / 2)
     Widget.drawBaseWidget(x, y, width, height, self.title)
 end
