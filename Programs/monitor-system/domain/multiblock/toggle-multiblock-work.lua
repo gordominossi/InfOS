@@ -6,9 +6,20 @@ Machine = require("data.datasource.machine")
 
 local function exec(address, name)
     local multiblock = Machine.getMachine(address, name)
-    if not multiblock then return end
+    if not multiblock then
+        return
+    end
     local workAllowed = multiblock:isWorkAllowed()
-    multiblock.setWorkAllowed(not workAllowed, multiblock)
+
+    local successfull =
+        pcall(
+        function()
+            multiblock.setWorkAllowed(not workAllowed)
+        end
+    )
+    if (not successfull) then
+        multiblock:setWorkAllowed(not workAllowed)
+    end
 end
 
 return exec

@@ -26,7 +26,9 @@ local machinesNotFound = {}
 
 local function createMachineWidget(address, name)
     local function update(self, statuses)
-        if not statuses.machineStatus.multiblockStatus[address] then
+        local status = statuses.machineStatus.multiblockStatus[address]
+
+        if not status then
             machinesNotFound[address] = "not found"
             local nMachinesNotFound = 0
             for _, _ in pairs(machinesNotFound) do
@@ -42,7 +44,7 @@ local function createMachineWidget(address, name)
         end
 
         machinesNotFound[address] = nil
-        for key, value in pairs(statuses.machineStatus.multiblockStatus[address]) do
+        for key, value in pairs(status) do
             self[key] = value
         end
     end
