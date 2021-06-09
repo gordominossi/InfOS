@@ -22,28 +22,10 @@ local overview = {
         active = {}
     }
 }
-local machinesNotFound = {}
 
 local function createMachineWidget(address, name)
     local function update(self, statuses)
         local status = statuses.machineStatus.multiblockStatus[address]
-
-        if not status then
-            machinesNotFound[address] = "not found"
-            local nMachinesNotFound = 0
-            for _, _ in pairs(machinesNotFound) do
-                nMachinesNotFound = nMachinesNotFound + 1
-            end
-
-            Term.setCursor(1, 1)
-            Term.gpu().setBackground(Colors.black)
-            Term.gpu().setForeground(Colors.errorColor)
-            print("Failed to find the machine " .. address .. ". " .. nMachinesNotFound .. " machines not found.")
-
-            return
-        end
-
-        machinesNotFound[address] = nil
         for key, value in pairs(status) do
             self[key] = value
         end

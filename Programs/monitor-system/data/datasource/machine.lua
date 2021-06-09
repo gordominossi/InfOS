@@ -23,6 +23,7 @@ machine.states = {
     IDLE = {name = "IDLE", color = Colors.idleColor},
     OFF = {name = "OFF", color = Colors.offColor},
     BROKEN = {name = "BROKEN", color = Colors.errorColor},
+    MISSING = {name = "NOT FOUND", color = Colors.errorColor}
 }
 
 function machine.getMachine(address, name)
@@ -35,6 +36,8 @@ function machine.getMachine(address, name)
     -- end
 end
 
+local machinesNotFound = {}
+
 function machine:new(partialAdress, name)
     local mach = nil
 
@@ -42,9 +45,21 @@ function machine:new(partialAdress, name)
         pcall(
         function()
             mach = New(self, Component.proxy(Component.get(partialAdress)))
+            machinesNotFound[partialAdress] = nil
         end
     )
     if (not successfull and Filesystem.exists("/home/InfOS/.gitignore")) then
+        machinesNotFound[partialAdress] = "not found"
+        local nMachinesNotFound = 0
+        for _, _ in pairs(machinesNotFound) do
+            nMachinesNotFound = nMachinesNotFound + 1
+        end
+
+        Term.setCursor(1, 1)
+        Term.gpu().setBackground(Colors.black)
+        Term.gpu().setForeground(Colors.errorColor)
+        print("Failed to find the machine " .. partialAdress .. ". " .. nMachinesNotFound .. " machines not found.")
+
         mach = New(self, self.mock:new(partialAdress, name))
     end
 
