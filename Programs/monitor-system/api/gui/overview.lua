@@ -1,5 +1,6 @@
 -- Import section
 Widget = require("api.gui.widget")
+Colors = require("graphics.colors")
 
 local multiBlockAddresses = require("config.addresses.multi-blocks")
 local getMultiblockStatus = require("domain.multiblock.get-multiblock-status-usecase")
@@ -32,6 +33,8 @@ local function createMachineWidget(address, name)
                 nMachinesNotFound = nMachinesNotFound + 1
             end
             Term.setCursor(1, 1)
+            Term.gpu().setBackground(Colors.black)
+            Term.gpu().setForeground(Colors.errorColor)
             print("Failed to find the machine " .. address .. ". " .. nMachinesNotFound .. " machines not found.")
             return
         end
