@@ -4,7 +4,15 @@ Machine = require("data.datasource.machine")
 
 local function exec(address, name)
     local multiblock = Machine.getMachine(address, name)
-    if not multiblock then return end
+    if not multiblock then
+        return {
+            progress = 0,
+            maxProgress = 0,
+            probablyUses = 0,
+            efficiencyPercentage = 0,
+            state = Machine.states.MISSING
+        }
+    end
     local problems = multiblock:getNumberOfProblems()
 
     local state = {}
