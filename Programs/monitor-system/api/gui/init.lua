@@ -7,7 +7,6 @@ Constants = require("api.gui.constants")
 Colors = require("graphics.colors")
 Widget = require("api.gui.widget")
 
-local energyBufferAddresses = require("config.addresses.energy-buffers")
 --
 
 -- GPU resolution should be 160 x 50.
@@ -55,8 +54,8 @@ local elements = {
 Event.listen(
     "touch",
     function(_, _, x, y)
-        local xContribution = x / Constants.baseWidth
-        local yContribution = 4 * math.floor(y / Constants.baseHeight)
+        local xContribution = x / Constants.widgetBaseWidth
+        local yContribution = 4 * math.floor(y / Constants.widgetBaseHeight)
         local screenIndex = 1 + (math.floor(2 * (xContribution + yContribution))) / 2
 
         local selected = elements[screenIndex] or elements[screenIndex - 0.5]
@@ -65,37 +64,38 @@ Event.listen(
 )
 
 local function drawTitle(title)
-    local x = Constants.baseWidth
+    local x = Constants.widgetBaseWidth
     local y = 1
-    local width = math.floor(2.5 * Constants.baseWidth)
-    local height = math.floor(0.8 * Constants.baseHeight)
+    local width = math.floor(2.5 * Constants.widgetBaseWidth)
+    local height = math.floor(0.8 * Constants.widgetBaseHeight)
     Widget.drawBaseWidget(x, y, width, height, title)
 end
 
+local function drawRebootButton()
+    local width = math.floor(0.3 * Constants.widgetBaseWidth)
+    local height = math.floor(0.6 * Constants.widgetBaseHeight)
+    local x = math.floor(3.25 * Constants.widgetBaseWidth) + math.floor((Constants.widgetBaseWidth - width) / 2)
+    local y = math.floor((Constants.widgetBaseHeight - height) / 2)
+    Widget.drawBaseWidget(x, y, width, height, "Restart")
+end
+
 local function drawSidebarButton(index, title)
-    local width = math.floor(0.6 * Constants.baseWidth)
-    local height = math.floor(0.6 * Constants.baseHeight)
-    local x = math.floor((Constants.baseWidth - width) / 2)
-    local y = (index - 1) * Constants.baseHeight + math.floor((Constants.baseHeight - height) / 2)
+    local width = math.floor(0.6 * Constants.widgetBaseWidth)
+    local height = math.floor(0.6 * Constants.widgetBaseHeight)
+    local x = math.floor((Constants.widgetBaseWidth - width) / 2)
+    local y = (index - 1) * Constants.widgetBaseHeight + math.floor((Constants.widgetBaseHeight - height) / 2)
     Widget.drawBaseWidget(x, y, width, height, title)
 end
 
 local function drawNavigationButton(self, index)
-    local width = math.floor(0.3 * Constants.baseWidth)
-    local height = math.floor(0.6 * Constants.baseHeight)
-    local x = math.floor((2.4 + 0.4 * index) * Constants.baseWidth) + math.floor((Constants.baseWidth - width) / 2)
-    local y = 4 * Constants.baseHeight + math.floor((Constants.baseHeight - height) / 2)
-    if self.active then
-        Widget.drawBaseWidget(x, y, width, height, self.title)
+    if not self.active then
+        return
     end
-end
-
-local function drawRebootButton()
-    local width = math.floor(0.3 * Constants.baseWidth)
-    local height = math.floor(0.6 * Constants.baseHeight)
-    local x = math.floor(3.25 * Constants.baseWidth) + math.floor((Constants.baseWidth - width) / 2)
-    local y = math.floor((Constants.baseHeight - height) / 2)
-    Widget.drawBaseWidget(x, y, width, height, "Restart")
+    local width = math.floor(0.3 * Constants.widgetBaseWidth)
+    local height = math.floor(0.6 * Constants.widgetBaseHeight)
+    local x = math.floor((2.4 + 0.4 * index) * Constants.widgetBaseWidth) + math.floor((Constants.widgetBaseWidth - width) / 2)
+    local y = 4 * Constants.widgetBaseHeight + math.floor((Constants.widgetBaseHeight - height) / 2)
+    Widget.drawBaseWidget(x, y, width, height, self.title)
 end
 
 local function clickNavigationButton(self)
@@ -139,8 +139,8 @@ function page.fake()
     setupSideBar(pages.overview)
 end
 
-function page.setup()
-    elements.powerWidget = Widget.createPowerWidget(energyBufferAddresses.batteryBuffer1)
+function page.setup(statuses)
+    elements.powerWidget = Widget.createPowerWidget(statuses.powerStatus)
 
     elements.navigationButtons[1] = {
         title = "◀",
@@ -177,9 +177,9 @@ function page.setup()
     setupSideBar(pages.overview)
 end
 
-function page.update()
+function page.update(statuses)
     for _, widget in ipairs(elements.mainSection.widgets) do
-        widget:update()
+        widget:update(statuses)
     end
     for i = 1, 9 do
         elements.mainSection.widgets.active[i] =
@@ -195,13 +195,13 @@ function page.update()
     elements[14] = elements.mainSection.widgets.active[7]
     elements[15] = elements.mainSection.widgets.active[8]
     elements[16] = elements.mainSection.widgets.active[9]
-    Widget.clear()
 
+    Widget.clear()
     for index, activeWidget in ipairs(elements.mainSection.widgets.active) do
         activeWidget:draw(index)
     end
 
-    elements.powerWidget:update()
+    elements.powerWidget:update(statuses.powerStatus)
     elements.powerWidget:draw()
 
     for index, navigationButton in ipairs(elements.navigationButtons) do

@@ -1,6 +1,6 @@
 local constants = {}
 
-constants.baseWidth = 40
-constants.baseHeight = 10
+constants.widgetBaseWidth = 40
+constants.widgetBaseHeight = 10
 
 return constants
