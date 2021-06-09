@@ -32,12 +32,15 @@ local function createMachineWidget(address, name)
             for _, _ in pairs(machinesNotFound) do
                 nMachinesNotFound = nMachinesNotFound + 1
             end
+
             Term.setCursor(1, 1)
             Term.gpu().setBackground(Colors.black)
             Term.gpu().setForeground(Colors.errorColor)
             print("Failed to find the machine " .. address .. ". " .. nMachinesNotFound .. " machines not found.")
+
             return
         end
+
         machinesNotFound[address] = nil
         for key, value in pairs(statuses.machineStatus.multiblockStatus[address]) do
             self[key] = value
