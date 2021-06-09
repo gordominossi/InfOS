@@ -19,7 +19,7 @@ function machine.update(powerStatus)
     end
     return {
         cleanroomStatus = cleanroomStatus,
-        multiblockStatuses = multiblockAddresses
+        multiblockStatuses = multiblockStatuses
     }
 end
 

@@ -34,8 +34,6 @@ function machine.getMachine(address, name)
     -- end
 end
 
-local nMachinesNotFound = 0
-
 function machine:new(partialAdress, name)
     local machine = {}
 
@@ -46,9 +44,6 @@ function machine:new(partialAdress, name)
         end
     )
     if (not successfull) then
-        nMachinesNotFound = nMachinesNotFound + 1
-        Term.setCursor(1, 1)
-        print("Failed to find the machine " .. partialAdress .. ". Failed " .. nMachinesNotFound .. " times.")
         machine = New(self, self.mock:new(partialAdress, name))
     end
 

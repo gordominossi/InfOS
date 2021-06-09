@@ -21,10 +21,22 @@ local overview = {
         active = {}
     }
 }
+local machinesNotFound = {}
 
 local function createMachineWidget(address, name)
-    local function update(self)
-        for key, value in pairs(getMultiblockStatus(address, self.name)) do
+    local function update(self, statuses)
+        if not statuses.machineStatus.multiblockStatus[address] then
+            machinesNotFound[address] = "not found"
+            local nMachinesNotFound = 0
+            for _, _ in pairs(machinesNotFound) do
+                nMachinesNotFound = nMachinesNotFound + 1
+            end
+            Term.setCursor(1, 1)
+            print("Failed to find the machine " .. address .. ". " .. nMachinesNotFound .. " machines not found.")
+            return
+        end
+        machinesNotFound[address] = nil
+        for key, value in pairs(statuses.machineStatus.multiblockStatus[address]) do
             self[key] = value
         end
     end
@@ -43,7 +55,7 @@ local function createMachineWidget(address, name)
         draw = Widget.draw
     }
 
-    machineWidget:update()
+    machineWidget:update({machineStatus = {multiblockStatus = {[address] = getMultiblockStatus(address, name)}}})
 
     return machineWidget
 end
