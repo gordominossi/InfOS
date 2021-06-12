@@ -16,7 +16,7 @@ For better developing and debbuging, I sugest installing OCEmu.
 - Work nice with shaders
 - Work with OCEmu
 
-## Installation for development
+### Installation for development
 - Download and setup OCEmu
 - Find The directory in your system corresponding to the OCEmu disk
 - cd into `diskname/home`
@@ -25,13 +25,13 @@ For better developing and debbuging, I sugest installing OCEmu.
 - Run `ln -s .shrc InfOS/.shrc`
 - Run `ln -s setup InfOS/setup`
 
-## Installation for ingame use
+### Installation for ingame use
 - Open your OpenComputer
 - Paste `wget https://raw.githubusercontent.com/gordominossi/InfOS/master/setup.lua -f` into the terminal and run it
 - Run `setup`
 - Enjoy
 
-## Configuration for your machines
+### Configuration for your machines
 - Unfortunately, as the code is right now, you'll have to configure each machine by hand, which means putting their addresses and names into the correct addresses files
 - There will be an update that detects new machines and another one that facilitates the initial setup (See issue #21)
 
